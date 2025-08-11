@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UXF200 Grocery App - Enhanced Prototype</title>
+    <style>
+        /* ===== GLOBAL STYLES ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #121212;
+            color: #e0e0e0;
+            max-width: 500px;
+            margin: 0 auto;
+            position: relative;
+            min-height: 100vh;
+        }
+        
+        .container {
+            padding: 15px;
+            padding-bottom: 70px;
+        }
+        
+        h1, h2, h3 {
+            margin-bottom: 15px;
+            color: #4caf50;
+        }
+        
+        /* ===== CARD COMPONENTS ===== */
+        .card {
+            background-color: #1e1e1e;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            border: 1px solid #333;
+        }
+        
+        .spent-amount {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #ffffff;
+        }
+        
+        .divider {
+            height: 1px;
+            background-color: #333;
+            margin: 15px 0;
+        }
+        
+        /* ===== LIST ITEMS ===== */
+        .list-item {
+            margin-bottom: 10px;
+            padding-left: 10px;
+            border-left: 3px solid #4caf50;
+        }
+        
+        /* ===== PROGRESS BAR ===== */
+        .budget-progress {
+            margin-bottom: 15px;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background-color: #333;
+            border-radius: 5px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background-color: #4caf50;
+            width: 62%;
+        }
+        
+        /* ===== CATEGORY ITEMS ===== */
+        .category-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #333;
+        }
+        
+        /* ===== INSIGHTS CARDS ===== */
+        .insight-card {
+            background-color: #2a2a2a;
+            border-left: 3px solid #4caf50;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        
+        /* ===== WEEKLY CARDS ===== */
+        .week-card {
+            display: inline-block;
+            width: 48%;
+            margin-right: 2%;
+            vertical-align: top;
+            background-color: #1e1e1e;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .week-card:last-child {
+            margin-right: 0;
+        }
+        
+        /* ===== PRODUCT CARDS ===== */
+        .product-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #252525;
+            border-radius: 8px;
+        }
+        
+        .product-info {
+            flex: 1;
+        }
+        
+        .product-price {
+            font-weight: bold;
+            color: #4caf50;
+        }
+        
+        /* ===== CATEGORY GRID ===== */
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .category-box {
+            background-color: #252525;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+        
+        .category-box:hover {
+            transform: translateY(-2px);
+            background-color: #2e2e2e;
+        }
+        
+        /* ===== PROFILE SECTION ===== */
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .profile-pic {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: #4caf50;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-right: 15px;
+        }
+        
+        .profile-stats {
+            display: flex;
+            margin: 15px 0;
+        }
+        
+        .stat-item {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #4caf50;
+        }
+        
+        .menu-item {
+            padding: 15px 0;
+            border-bottom: 1px solid #333;
+            transition: background-color 0.2s;
+            cursor: pointer;
+        }
+        
+        .menu-item:hover {
+            background-color: #252525;
+        }
+        
+        /* ===== BOTTOM NAVIGATION ===== */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #1e1e1e;
+            display: flex;
+            justify-content: space-around;
+            padding: 15px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
+            max-width: 500px;
+            margin: 0 auto;
+            border-top: 1px solid #333;
+        }
+        
+        .nav-item {
+            text-align: center;
+            color: #9e9e9e;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        
+        .nav-item.active {
+            color: #4caf50;
+            font-weight: bold;
+        }
+        
+        /* ===== PAGE MANAGEMENT ===== */
+        .page {
+            display: none;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        /* ===== NEW COMPONENTS ===== */
+        .badge {
+            background-color: #f44336;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+            margin-left: 5px;
+        }
+        
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        button:hover {
+            background-color: #3d8b40;
+        }
+        
+        button.secondary {
+            background-color: #333;
+            color: #e0e0e0;
+        }
+        
+        button.secondary:hover {
+            background-color: #444;
+        }
+        
+        .list-input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #252525;
+            border: 1px solid #333;
+            border-radius: 5px;
+            color: white;
+        }
+        
+        .filter-option {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .filter-checkbox {
+            margin-right: 10px;
+        }
+        
+        .alert-item {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            background-color: #252525;
+        }
+        
+        .reorder-btn {
+            background-color: #333;
+            color: #4caf50;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .reorder-btn:hover {
+            background-color: #444;
+        }
+        
+        #list-creation-feedback {
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- HOME PAGE -->
+    <div class="container page active" id="home-page">
+        <h1>Monthly Budget</h1>
+        
+        <div class="card">
+            <h2>Spent</h2>
+            <div class="spent-amount">$247.80</div>
+            <div class="spent-amount">$2400.00</div>
+        </div>
+        
+        <div class="divider"></div>
+        
+        <div class="card">
+            <h3>Create New Smart List</h3>
+            <input type="text" id="new-list-name" placeholder="List name" class="list-input">
+            <button id="create-list-btn">Create Smart List</button>
+            <div id="list-creation-feedback" style="display:none;"></div>
+        </div>
+        
+        <div class="card">
+            <h3>Quick Reorder</h3>
+            <div class="list-item" id="last-weeks-order">
+                Last Week's Order (7 items) 
+                <button class="reorder-btn">Reorder</button>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h3>Smart Lists</h3>
+            <p>Ai-powered lists</p>
+        </div>
+        
+        <div class="card">
+            <h3>Smart Saved Lists</h3>
+            <div class="list-item">Weekly Essentials</div>
+            <p>Empty + Auto-lip/dated</p>
+        </div>
+    </div>
+    
+    <!-- BUDGET PAGE -->
+    <div class="container page" id="budget-page">
+        <h1>Monthly Budget $247.80</h1>
+        
+        <div class="card">
+            <p>of $400.00 spent:</p>
+            <div class="spent-amount">$245, used</div>
+            <div class="spent-amount">$152.20 remaining</div>
+            
+            <div class="budget-progress">
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h3>Budget Alerts</h3>
+            <div class="alert-item" id="produce-alert">
+                Produce: $89.20/$100 
+                <span class="badge">90%</span>
+            </div>
+            <button id="adjust-budget">Adjust Budget</button>
+        </div>
+        
+        <div class="card">
+            <h2>Category Breakdown</h2>
+            
+            <div class="category-item">
+                <span>Produce</span>
+                <span>$89.20</span>
+            </div>
+            
+            <div class="category-item">
+                <span>Meat & Seafood</span>
+                <span>$67.30</span>
+            </div>
+            
+            <div class="category-item">
+                <span>Dairy & Eggs</span>
+                <span>$48.80</span>
+            </div>
+            
+            <div class="category-item">
+                <span>Pantry</span>
+                <span>$45.50</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- BROWSE PAGE -->
+    <div class="container page" id="browse-page">
+        <h1>Featured Products</h1>
+        
+        <div class="card">
+            <h3>Filters</h3>
+            <div class="filter-option">
+                <input type="checkbox" id="kid-friendly" class="filter-checkbox">
+                <label for="kid-friendly">Kid-Friendly Items</label>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h3>Organic Apples</h3>
+            <div class="product-card">
+                <div class="product-info">
+                    <p>Organic Red Apples</p>
+                    <p>2 lbs bag</p>
+                </div>
+                <div class="product-price">$4.99</div>
+            </div>
+            
+            <div class="product-card">
+                <div class="product-info">
+                    <p>Whole Milk</p>
+                    <p>1 gallon</p>
+                </div>
+                <div class="product-price">$3.49</div>
+            </div>
+        </div>
+        
+        <h2>Shop by Category</h2>
+        <div class="category-grid">
+            <div class="category-box">
+                <h3>Produce</h3>
+            </div>
+            <div class="category-box">
+                <h3>Dairy</h3>
+            </div>
+            <div class="category-box">
+                <h3>Meat</h3>
+            </div>
+            <div class="category-box">
+                <h3>Pantry</h3>
+            </div>
+        </div>
+    </div>
+    
+    <!-- PROFILE PAGE -->
+    <div class="container page" id="profile-page">
+        <div class="profile-header">
+            <div class="profile-pic">SJ</div>
+            <div>
+                <h1>Sarah Johnson</h1>
+                <p>sarah.johnson@email.com</p>
+                <p>📌 4.8 💬 47 orders</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="profile-stats">
+                <div class="stat-item">
+                    <div class="stat-value">$1,247</div>
+                    <p>Total Saved</p>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">23</div>
+                    <p>Active Lists</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>Personal Information</h2>
+            
+            <div class="menu-item">Payment Methods</div>
+            <div class="menu-item">Delivery Addresses</div>
+            <div class="menu-item">Order History</div>
+            <div class="menu-item">Favorite Products</div>
+            <div class="menu-item">Notifications</div>
+            <div class="menu-item">Help & Support</div>
+        </div>
+    </div>
+    
+    <!-- CHECKOUT PAGE -->
+    <div class="container page" id="checkout-page">
+        <h1>Checkout</h1>
+        <div class="card">
+            <h3>3 Items in Cart</h3>
+            <div class="product-card">
+                <div class="product-info">
+                    <p>Organic Apples</p>
+                    <p>2 lbs bag</p>
+                </div>
+                <div class="product-price">$4.99</div>
+            </div>
+            <div class="product-card">
+                <div class="product-info">
+                    <p>Whole Milk</p>
+                    <p>1 gallon</p>
+                </div>
+                <div class="product-price">$3.49</div>
+            </div>
+            <div class="product-card">
+                <div class="product-info">
+                    <p>Whole Wheat Bread</p>
+                    <p>Loaf</p>
+                </div>
+                <div class="product-price">$2.99</div>
+            </div>
+            
+            <div class="divider"></div>
+            
+            <div class="category-item">
+                <span>Subtotal</span>
+                <span>$11.47</span>
+            </div>
+            <div class="category-item">
+                <span>Delivery</span>
+                <span>$2.99</span>
+            </div>
+            <div class="category-item">
+                <span>Total</span>
+                <span class="spent-amount">$14.46</span>
+            </div>
+            
+            <button id="complete-checkout">Complete Checkout</button>
+            <button class="secondary">Continue Shopping</button>
+        </div>
+    </div>
+    
+    <!-- BOTTOM NAVIGATION -->
+    <div class="bottom-nav">
+        <div class="nav-item active" data-page="home-page">
+            Home
+        </div>
+        <div class="nav-item" data-page="budget-page">
+            Budget
+        </div>
+        <div class="nav-item" data-page="browse-page">
+            Browse
+        </div>
+        <div class="nav-item" data-page="checkout-page">
+            Cart <span class="badge">3</span>
+        </div>
+        <div class="nav-item" data-page="profile-page">
+            Profile
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Navigation functionality
+            const navItems = document.querySelectorAll('.nav-item');
+            const pages = document.querySelectorAll('.page');
+            
+            navItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    pages.forEach(page => page.classList.remove('active'));
+                    
+                    this.classList.add('active');
+                    const pageId = this.getAttribute('data-page');
+                    document.getElementById(pageId).classList.add('active');
+                });
+            });
+            
+            // Budget progress bar
+            const progressFill = document.querySelector('.progress-fill');
+            const spent = 247.80;
+            const budget = 400.00;
+            const percentage = (spent / budget) * 100;
+            progressFill.style.width = `${percentage}%`;
+            
+            // Budget alert coloring
+            const produceAlert = document.getElementById('produce-alert');
+            if(89.20 > 80) {
+                produceAlert.style.color = '#ff9800';
+                produceAlert.querySelector('.badge').style.backgroundColor = '#ff9800';
+            }
+            
+            // Create smart list
+            document.getElementById('create-list-btn').addEventListener('click', function() {
+                const listName = document.getElementById('new-list-name').value;
+                if(listName) {
+                    const feedback = document.getElementById('list-creation-feedback');
+                    feedback.textContent = `"${listName}" created successfully!`;
+                    feedback.style.display = 'block';
+                    feedback.style.color = '#4caf50';
+                }
+            });
+            
+            // Quick reorder
+            document.querySelector('.reorder-btn').addEventListener('click', function() {
+                alert('7 items from last week added to your cart!');
+            });
+            
+            // Kid-friendly filter
+            document.getElementById('kid-friendly').addEventListener('change', function() {
+                const products = document.querySelectorAll('.product-card');
+                products.forEach(product => {
+                    if(this.checked) {
+                        if(!product.textContent.includes('Milk')) {
+                            product.style.display = 'none';
+                        }
+                    } else {
+                        product.style.display = 'flex';
+                    }
+                });
+            });
+            
+            // Adjust budget
+            document.getElementById('adjust-budget').addEventListener('click', function() {
+                alert('Budget adjustment screen would appear');
+            });
+            
+            // Complete checkout
+            document.getElementById('complete-checkout').addEventListener('click', function() {
+                alert('Order placed successfully!');
+            });
+            
+            // Category box clicks
+            document.querySelectorAll('.category-box').forEach(box => {
+                box.addEventListener('click', function() {
+                    alert(`Showing ${this.querySelector('h3').textContent} category`);
+                });
+            });
+            
+            // Menu item clicks
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    alert(`Navigating to ${this.textContent}`);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
